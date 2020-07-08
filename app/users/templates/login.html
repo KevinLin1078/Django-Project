@@ -1,0 +1,97 @@
+<html>
+ 	<head>
+ 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+ 	</head>
+
+
+ 	{% load static %}
+ 	<body>
+ 		<h1> Login RESTful Form</h1>
+		<img src='{% static "img/0.jpg" %}' alt="My image">
+		
+		<input type="text" class="input100" placeholder="email" value="root@gmail.com" name='email' id ='email'/>
+		<input type="password" class="input100" placeholder="Password" value="root" name='password' id='password'/>
+		<input type="button" class="btnSubmit" value="Login" id='login'/>
+		<input type="button" class="btnSubmit" value="Acess" id='access'/>
+ 	
+		<h1> Login HTTP Form</h1>
+		<img src='{% static "img/0.jpg" %}' alt="My image">
+		
+		
+		
+		<form method="post" nonvalidate  >
+			{% csrf_token %}
+			{{ LoginForm   }}
+			
+			<button type="submit">Submit</button>
+		</form>
+
+
+ 	</body>
+
+
+</html>
+
+
+<script>
+
+	$(document).ready(function(){
+		// ---> 1. Login RESTful<---
+		$( "#login" ).on( "click",function() {
+ 			
+ 			data =  JSON.stringify({  	 
+ 						'email':$("#email").val(),
+ 						'password':$("#password").val()
+ 					})
+ 			$.ajax({
+ 				url: 'http://127.0.0.1:8000/api/token/',
+ 				type: 'POST',
+ 				contentType:"application/json",
+ 				dataType:"json",
+				data: data,
+				success: function(resp){
+					console.log('success1')
+					localStorage.setItem("access",  "Bearer " + resp['access'])  //JWT Acess Token  "Bearer: token_code" 
+					localStorage.setItem("refresh", "Bearer " + resp['refresh'])
+				},
+				error: function(err){
+					alert('failed')
+				}
+ 			})
+		});
+		// ---> Login End<---
+
+		// ---> 2. Login RESTful with Token<---
+		$( "#access" ).on( "click",function() {
+
+			headerParams = {'Authorization': localStorage.getItem('access')};
+		    obj = {
+		        type: 'GET',
+		        url: 'http://127.0.0.1:8000/register/',
+		        headers: headerParams,
+		    	data: [],
+		    	dataType: 'json',
+		    	processData: false,
+		    	success: function(data) {
+		        	console.log('access success 1');
+		    	},
+		    	error: function(err){
+		    		alert('access fail')
+		    	}
+
+			};
+		  	jQuery.ajax(obj);
+		 })
+		// ---> Login RESTful with Token END<---
+
+
+
+	});
+
+
+
+
+
+
+</script>
