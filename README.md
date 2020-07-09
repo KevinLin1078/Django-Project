@@ -2,6 +2,12 @@
 
 This is a customized reusable user model created using Django customizable manager and authentication backend  
 
+## Basic Information
+### This user interface utilizes two types of authentication. 
+1. JWT Authentication with RESTful API using access and refresh token
+2. HTTP Session Authentication 
+
+
 ## Installation
 
 This application is created in Python 3.6 using Linux
