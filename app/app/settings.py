@@ -30,7 +30,10 @@ INSTALLED_APPS = [
 # users         = users app folder
 # CustomUser    = CustomUser model
 AUTH_USER_MODEL = 'users.CustomUser'
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+AUTHENTICATION_BACKENDS = 	(
+						'users.backends.UserBackend',
+						'django.contrib.auth.backends.ModelBackend',
+							)
 
 
 

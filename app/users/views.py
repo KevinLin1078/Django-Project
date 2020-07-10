@@ -3,8 +3,6 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
 
-# from django.contrib.auth import authenticate
-
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 
@@ -12,7 +10,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from .forms import LoginForm
-
 from .models import CustomUser
 
 class Register(APIView):
@@ -26,9 +23,8 @@ class Register(APIView):
 
 
 
-from .backends import UserAuthentication 
+from django.contrib.auth import authenticate, login # THIS USES 'from users.backends import UserBackend ' as default
 class Login(View):	
-	#Dont initialize models here, not good for application. WILL CAUSE ERRORS
 
 	def get(self, request):
 		form = LoginForm() 				# This form contains 2 types of forms: RESTful and HTTP
@@ -44,8 +40,10 @@ class Login(View):
 
 			if is_password:
 				print('------Is password correct?-------- ', is_password)
-				request.user = UserAuthentication.authenticate(self, email=email, password=password)
-				
+				valid_user = authenticate(request, username=email, password=password)
+				if valid_user: login(request, valid_user)
+
+				print(request.user)
 				return HttpResponse("Good Http Session Login ", status=200)
 
 
