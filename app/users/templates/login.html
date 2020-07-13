@@ -7,18 +7,17 @@
 
  	{% load static %}
  	<body>
- 		<h1> Login RESTful Form</h1>
-		<img src='{% static "img/0.jpg" %}' alt="My image">
+ 		<h1> Login with RESTful </h1>
+		<!-- <img src='{% static "img/0.jpg" %}' alt="My image"> -->
 		
+
 		<input type="text" class="input100" placeholder="email" value="root@gmail.com" name='email' id ='email'/>
 		<input type="password" class="input100" placeholder="Password" value="root" name='password' id='password'/>
-		<input type="button" class="btnSubmit" value="Login" id='login'/>
-		<input type="button" class="btnSubmit" value="Acess" id='access'/>
+		<input type="button" class="btnSubmit" value="RESTful Login" id='login'/>
+		<input type="button" class="btnSubmit" value="JWT Login" id='access'/>
  	
-		<h1> Login HTTP Form</h1>
-		<img src='{% static "img/0.jpg" %}' alt="My image">
-		
-		
+
+		<h1> Login with HTTP </h1>
 		
 		<form method="post" nonvalidate  >
 			{% csrf_token %}

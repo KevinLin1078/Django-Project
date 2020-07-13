@@ -27,7 +27,8 @@ alias m='python manage.py migrate'
 alias r='python manage.py runserver'
 alias c='python manage.py createsuperuser'
 alias t='python manage.py test'  # python manage.py test users.testing.tests.TestAbstractUser
-
+alias sp='django-admin startproject'
+alias sa='python manage.py startapp'
 
 
 # Checking if enviroment works. 
@@ -43,6 +44,7 @@ database="app/db.sqlite3"
 # 	rm $database
 # 	echo '-----DATABASE REMOVED-----'
 # 	rm /mnt/c/Users/Kevin\ Lin/Desktop/new/app/users/migrations/0*
+# 	rm /mnt/c/Users/Kevin\ Lin/Desktop/new/app/post/migrations/0*
 # fi 
 
 

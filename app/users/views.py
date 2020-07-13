@@ -9,51 +9,83 @@ from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from .forms import LoginForm
+
 from .models import CustomUser
+from .forms import LoginForm, SignUpForm
+
+Users = get_user_model()
+class Index(View):
+	def get(self, request):
+		return render(request, 'index.html',{})
+
 
 class Register(APIView):
 	permission_classes = (IsAuthenticated,) # Automatically authenticates user through ReSTful API
 	
 	def get(self, request):
-		Users = get_user_model()
+		
 		obj = Users.objects.filter(email='a@gmail.com')
 		print('Added')
 		return JsonResponse({'foo':'bar'})
 
 
+class SignUp(View):
 
-from django.contrib.auth import authenticate, login # THIS USES 'from users.backends import UserBackend ' as default
+	def get(self, request):
+		return render(request, 'signup.html',{'SignUpForm': SignUpForm() })
+
+	def post(self, request):
+		form = SignUpForm(request.POST)
+
+		if form.is_valid():
+			email, password, password2 = form.cleaned_data['email'], form.cleaned_data['password'], form.cleaned_data['password2']
+			try:
+				user = Users.objects.get(email=email)
+			except Users.DoesNotExist:
+				if password != password2: return HttpResponse("Passwords Do Not Match", status=405)
+				form.save(commit=True)
+				
+				u = Users.objects.get(email=email)
+				u.set_password(password)
+				u.save()
+				return HttpResponse("User Created", status=202)
+		
+		return HttpResponse("Invalid SignUp Form Input", status=202)
+
+
+
+from django.contrib.auth import authenticate, login, logout # THIS USES 'from users.backends import UserBackend ' as default 
 class Login(View):	
 
 	def get(self, request):
-		form = LoginForm() 				# This form contains 2 types of forms: RESTful and HTTP
-		return render(request, 'login.html',{'LoginForm': form})
+		return render(request, 'login.html',{'LoginForm': LoginForm() })
 
 	def post(self, request):
-		Users, form = get_user_model(), LoginForm(request.POST) 	# Takes in form parameter
+		form = LoginForm(request.POST) 	# Takes in form parameter
 
 		if form.is_valid():
 			email, password = form.cleaned_data['email'], form.cleaned_data['password']
-			user = Users.objects.get(email=email)
+			
+			try:
+				user = Users.objects.get(email=email)
+			except Users.DoesNotExist:
+				return HttpResponse("Http Login: Invalid Email", status=401)
+
 			is_password = user.check_password(password)
 
 			if is_password:
-				print('------Is password correct?-------- ', is_password)
 				valid_user = authenticate(request, username=email, password=password)
-				if valid_user: login(request, valid_user)
+				login(request, valid_user) # login() sets request.user = valid_user  ALSO  # print(request.user)
+				return HttpResponse("Http Login: Success", status=200)
+			else:
+				return HttpResponse("Http Login: Wrong Password", status=402)
 
-				print(request.user)
-				return HttpResponse("Good Http Session Login ", status=200)
-
-
-
-		return HttpResponse("Bad Login", status=405)
+		return HttpResponse("Http Login: Invalid Form Inputs", status=403)
 
 
 
 class Logout(View):
-	permission_classes = (IsAuthenticated,)
+
 	def post(self, request):
-		pass
+		logout(request) # sets request.user = None
 
