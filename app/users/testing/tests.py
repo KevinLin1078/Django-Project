@@ -4,9 +4,6 @@ from django.contrib.auth import get_user_model
 from django.urls import resolve, reverse
 
 
-
-
-
 # python manage.py test users.testing.tests.TestAbstractUser
 
 class TestAbstractUser(TestCase):
@@ -28,12 +25,29 @@ class TestAbstractUser(TestCase):
 		self.assertEqual(login.view_name, 'users:login')
 		self.assertEqual(response.status_code, 200)
 
-	def test_user_login(self):
+	def test_user_login_post(self):
 		data = 	{"email": self.user1.email, 'password': 'alias' }
 		
 		response = self.client.post('/login/', data=data )
 		self.assertEqual(response.status_code, 200)
 
 
+# python manage.py test users.testing.tests.TestSignUpUrl
 
+class TestSignUpUrl(TestCase):
+	def test_get_signup_page(self):
+		signup = resolve('/signup/')
+		response = self.client.get(reverse('users:signup'))
+
+		self.assertEqual(signup.view_name, 'users:signup')
+		self.assertEqual(response.status_code, 200)
+
+	def test_signup_post(self):
+		data ={}
+		data['username'], data['email'] = 'justin', 'justin@gmail.com'
+		data['password'], data['password2'] = 'justin', 'justin'
+		
+		response = self.client.post('/signup/', data=data )
+		print(response)
+		self.assertEqual(response.status_code, 201)
 

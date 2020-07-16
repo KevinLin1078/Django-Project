@@ -48,9 +48,11 @@ class SignUp(View):
 				u = Users.objects.get(email=email)
 				u.set_password(password)
 				u.save()
-				return HttpResponse("User Created", status=202)
+				return HttpResponse("User Created", status=201)
+
+			return HttpResponse("Email Already Exists", status=405)
 		
-		return HttpResponse("Invalid SignUp Form Input", status=202)
+		return HttpResponse("Invalid SignUp Form Input", status=402)
 
 
 
